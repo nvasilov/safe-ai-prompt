@@ -68,12 +68,10 @@ export default defineContentScript({
                         const bodyStr = init.body.toString()
                         const sanitizedBodyStr = await sendMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD, bodyStr)
 
-                        console.log(sanitizedBodyStr)
-
-                        // return originalFetch(new Request(input, {
-                        //     ...init,
-                        //     body: sanitizedBodyStr
-                        // }))
+                        return originalFetch(new Request(input, {
+                            ...init,
+                            body: sanitizedBodyStr
+                        }))
 
                     } else {
                         // TODO if init or init.body is undefined then try to extract body from request#body stream

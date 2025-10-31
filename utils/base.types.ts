@@ -1,4 +1,4 @@
-export interface SanitizedTextResult {
+export interface SanitizedResult {
     emails: string[]
     value: string
 }

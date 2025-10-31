@@ -5,9 +5,11 @@ import {useAppDispatch, useAppSelector} from "@/redux/store.ts";
 function App() {
 
     const dispatch = useAppDispatch()
-    const {minutesToIgnore} = useAppSelector(state => state.prompts)
+    const {minutesToIgnore, sanitizedPrompts} = useAppSelector(state => state.prompts)
 
     // const {data, refetch, isFetching} = useGetLoremQuery()
+
+    console.log('sanitizedPrompts', sanitizedPrompts)
 
     const clickCallback = useCallback(() => {
         // dispatch(setUpdatedTm(new Date().toISOString()))
