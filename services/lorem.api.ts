@@ -1,4 +1,4 @@
-import {api} from "@/entrypoints/redux/api.ts";
+import {api} from "@/redux/api.ts";
 
 const injectedApi = api.injectEndpoints({
 

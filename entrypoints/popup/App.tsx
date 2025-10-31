@@ -1,32 +1,22 @@
 import {Button, Card, CardBody, CardFooter} from "@progress/kendo-react-all";
 import {checkIcon} from "@progress/kendo-svg-icons";
-import {useAppDispatch, useAppSelector} from "@/entrypoints/redux/hooks.ts";
-import {setUpdatedTm} from "../redux/base.slice";
-import {useGetLoremQuery} from "@/entrypoints/redux/lorem.api.ts";
+import {useAppDispatch, useAppSelector} from "@/redux/store.ts";
 
 function App() {
 
     const dispatch = useAppDispatch()
-    const {updatedTm} = useAppSelector(state => state.base)
+    const {minutesToIgnore} = useAppSelector(state => state.prompts)
 
-    const {data, refetch, isFetching} = useGetLoremQuery()
+    // const {data, refetch, isFetching} = useGetLoremQuery()
 
     const clickCallback = useCallback(() => {
-        dispatch(setUpdatedTm(new Date().toISOString()))
-        refetch()
+        // dispatch(setUpdatedTm(new Date().toISOString()))
     }, [])
 
     return (
         <Card style={{width: 500}}>
             <CardBody className={"k-vbox"}>
-                Hello world !!! {updatedTm}
-
-                {isFetching && <div>loading...</div>}
-
-                {!isFetching && (
-                    <div>{data?.title}</div>
-                )}
-
+                Hello world !!! {minutesToIgnore}
             </CardBody>
 
             <CardFooter>

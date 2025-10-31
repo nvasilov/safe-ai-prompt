@@ -1,7 +1,7 @@
 import {Provider} from "react-redux";
 import {PersistGate} from "redux-persist/integration/react";
 import {ReactNode} from "react";
-import {persistor, store} from "@/entrypoints/redux/store.ts";
+import {persistor, store} from "@/redux/store.ts";
 
 interface Props {
     children: ReactNode
