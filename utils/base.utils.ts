@@ -9,3 +9,5 @@ export const sanitizeText = (text: string): SanitizedResult => {
 
     return {emails, value}
 }
+
+export const DISTINCT_VALUES = <T extends string | number | null>(item: T, idx: number, arr: T[]) => arr.indexOf(item) === idx

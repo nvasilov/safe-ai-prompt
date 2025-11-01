@@ -25,3 +25,15 @@
         border-bottom: 1px solid var(--kendo-color-border);
     }
 }
+
+.k-animation-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .k-child-animation-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+}
