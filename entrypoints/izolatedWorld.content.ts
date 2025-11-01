@@ -1,6 +1,5 @@
 import {onMessage} from "webext-bridge/window";
 import {allowWindowMessaging, sendMessage} from 'webext-bridge/content-script'
-import {CHATGPT_URL_MATCH, SANITIZE_CHATGPT_REQUEST_PAYLOAD, WORLD_TO_ISOLATED_NS} from "@/utils/base.constants.ts";
 
 export default defineContentScript({
     matches: [CHATGPT_URL_MATCH],

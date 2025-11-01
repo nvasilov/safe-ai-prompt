@@ -1,0 +1,27 @@
+.custom-no-focus {
+    box-shadow: none !important;
+}
+
+.custom-expansion-panel {
+
+    .k-expander-header {
+        padding-block: var(--kendo-spacing-2);
+        padding-inline: var(--kendo-spacing-2);
+    }
+
+    .k-expander-title {
+        text-transform: none;
+        color: var(--kendo-color-on-app-surface);
+    }
+}
+
+.custom-expansion-panel.k-expanded {
+
+    border-color: var(--kendo-color-info-emphasis);
+    border-radius: var(--kendo-spacing-1);
+
+    .k-expander-header {
+        background-color: var(--kendo-color-info-subtle);
+        border-bottom: 1px solid var(--kendo-color-border);
+    }
+}

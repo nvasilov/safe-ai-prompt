@@ -14,6 +14,7 @@ export default defineBackground(() => {
         if (payloadParseResult.success) {
 
             // after parse, we can work with native object to not lose data
+            // TODO try to use zod#strip/loose (with deep propagation)
             const payload: ChatGptBody = payloadObj
 
             const emails: string[] = []

@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
-import '@progress/kendo-theme-bootstrap/dist/all.css';
-import ReduxProvider from "@/redux/ReduxProvider.tsx";
+
+import SafePromptCard from "@/components/prompt/SafePromptCard.tsx";
+import UIWrapper from "@/components/UIWrapper.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <ReduxProvider>
-            <App/>
-        </ReduxProvider>
-    </React.StrictMode>,
-);
+    <UIWrapper>
+        <SafePromptCard/>
+    </UIWrapper>
+)
