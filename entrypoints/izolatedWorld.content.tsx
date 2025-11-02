@@ -10,6 +10,7 @@ export default defineContentScript({
     cssInjectionMode: 'ui',
     main: async (ctx) => {
 
+        // TODO work only in chrome
         allowWindowMessaging(WORLD_TO_ISOLATED_NS)
 
         const ui = await createShadowRootUi(ctx, {

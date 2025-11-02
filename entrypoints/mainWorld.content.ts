@@ -13,6 +13,7 @@ export default defineContentScript({
     main: () => {
         const originalFetch = window.fetch.bind(window);
 
+        // TODO work only in chrome
         setNamespace(WORLD_TO_ISOLATED_NS)
 
         window.fetch = async function (input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
