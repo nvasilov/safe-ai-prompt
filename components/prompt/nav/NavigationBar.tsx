@@ -1,4 +1,4 @@
-import {AppBar, AppBarSection, AppBarSpacer, Card, CardBody, CardHeader, Zoom} from "@progress/kendo-react-all";
+import {AppBar, AppBarSection, AppBarSpacer, Card, CardBody, CardHeader} from "@progress/kendo-react-all";
 import wxtLogo from "@/assets/wxt.svg";
 import reactLogo from "@/assets/react.svg";
 import {dataIcon, gearIcon, sparklesIcon} from "@progress/kendo-svg-icons";

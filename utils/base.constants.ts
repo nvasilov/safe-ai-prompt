@@ -9,4 +9,4 @@ export const CHATGPT_URL_REGEX = /^https:\/\/chatgpt\.com\/backend(-anon)?\/f\/c
 
 export const WORLD_TO_ISOLATED_NS = "world_to_isolated_ns"
 
-export const SANITIZE_CHATGPT_REQUEST_PAYLOAD = "sanitize_chatgpt_request_payload"
+export const SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG = "sanitize_chatgpt_request_payload_msg"

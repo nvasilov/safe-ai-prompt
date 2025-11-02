@@ -16,12 +16,11 @@ export default function NavigationBarButton(
 
     const onClickCallback = useCallback(() => {
         onClick(id)
-    }, [])
+    }, [id, onClick])
 
     return (
-        <Button size={"small"} onClick={onClickCallback}
-                className={active ? "k-focus" : ""} svgIcon={icon}
-                disabled={active} fillMode={"clear"}>
+        <Button size={"small"} onClick={onClickCallback} svgIcon={icon} disabled={active} fillMode={"clear"}
+                className={active ? "k-focus" : ""} themeColor={active ? "primary" : "base"}>
             {label && label}
         </Button>
     )

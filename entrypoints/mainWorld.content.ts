@@ -1,51 +1,10 @@
 import {
     CHATGPT_URL_MATCH,
     CHATGPT_URL_REGEX,
-    EMAIL_REGEX,
-    SANITIZE_CHATGPT_REQUEST_PAYLOAD,
+    SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG,
     WORLD_TO_ISOLATED_NS
 } from "@/utils/base.constants.ts";
 import {sendMessage, setNamespace} from "webext-bridge/window";
-
-const sanitizeBody = (body: BodyInit) => {
-    const bodyObj = JSON.parse(body.toString())
-
-    const result: any[] = []
-
-    const messages = bodyObj.messages
-        .map((msg: any) => {
-
-            if (msg.content.content_type !== 'text' || !msg.content.parts) {
-                return msg
-
-            } else {
-                return {
-                    ...msg,
-                    content: {
-                        ...msg.content,
-                        parts: msg.content.parts
-                            .map((p: string) => {
-                                const found = p.match(EMAIL_REGEX) || [];
-
-                                if (found.length === 0) {
-                                    return p
-                                } else {
-                                    result.push(...found)
-                                    return p.replace(EMAIL_REGEX, '[EMAIL_ADDRESS]')
-                                }
-                            })
-                    }
-                }
-            }
-        })
-
-    console.log(result)
-
-    return JSON.stringify({
-        ...bodyObj,
-        messages
-    })
-}
 
 export default defineContentScript({
     matches: [CHATGPT_URL_MATCH],
@@ -66,7 +25,8 @@ export default defineContentScript({
 
                     if (init && init.body) {
                         const bodyStr = init.body.toString()
-                        const sanitizedBodyStr = await sendMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD, bodyStr)
+
+                        const {value: sanitizedBodyStr} = await sendMessage<SanitizedResult>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, bodyStr, 'content-script')
 
                         return originalFetch(new Request(input, {
                             ...init,

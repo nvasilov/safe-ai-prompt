@@ -25,8 +25,6 @@ export default function SafePromptCard() {
     }, [])
 
     return (
-        <div className={"k-vbox"} style={{width: 600, height: 400}}>
-            <NavigationBar className={"k-flex"} render={onRenderNavigationCallback}/>
-        </div>
+        <NavigationBar className={"k-flex"} render={onRenderNavigationCallback}/>
     )
 }

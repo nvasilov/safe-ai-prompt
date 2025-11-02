@@ -1,83 +1,46 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {persistReducer} from "redux-persist";
 import {wxtPersistStorage} from "@/redux/customStorage.ts";
-import {BaseSliceState, CrudSanitizedPrompt} from "@/utils/slice.types.ts";
-import {v4 as uuidv4} from "uuid";
+import {BaseSliceState} from "@/utils/base.types.ts";
 import moment from "moment";
+import {sanitizeKey} from "@/utils/base.utils.ts";
 
 const initialState: BaseSliceState = {
     updateTime: 0,
-    minutesToIgnore: 24 * 60, // 24h
-    sanitizedPrompts: {}
+    minutesToDismiss: 24 * 60, // 24h
+    dismissedEmails: {}, // [email] : expirationTime
+    sanitizedPrompts: []
 }
 
 const slice = createSlice({
     name: 'prompts',
     initialState,
     reducers: {
-        updateMinutesToIgnore(state, {payload: minutesToIgnore}: PayloadAction<number>) {
-            state.minutesToIgnore = minutesToIgnore
+        updateMinutesToDismiss(state, {payload: minutesToDismiss}: PayloadAction<number>) {
+            state.minutesToDismiss = minutesToDismiss
         },
 
-        addSanitizedPrompt(state, {payload: sanitizedPrompt}: PayloadAction<CrudSanitizedPrompt>) {
-            const id = uuidv4()
-
-            state.sanitizedPrompts = {
-                ...state.sanitizedPrompts,
-                [id]: {
-                    ...sanitizedPrompt,
-                    id,
-                    createdTime: moment().valueOf(),
-                    expirationTime: -1
-                }
-            }
-
+        addSanitizedPrompt(state, {payload: sanitizedPrompt}: PayloadAction<SanitizedPrompt>) {
+            state.sanitizedPrompts.push(sanitizedPrompt)
             state.updateTime = moment().valueOf()
         },
 
-        dismissPrompt(state, {payload: sanitizedPromptId}: PayloadAction<string>) {
-
-            const sanitizedPrompt = state.sanitizedPrompts[sanitizedPromptId]
-
-            if (sanitizedPrompt) {
-                state.sanitizedPrompts = {
-                    ...state.sanitizedPrompts,
-
-                    [sanitizedPromptId]: {
-                        ...sanitizedPrompt,
-                        expirationTime: moment().add(state.minutesToIgnore, "minutes").valueOf()
-                    }
-                }
-
-                state.updateTime = moment().valueOf()
-            }
+        dismissEmail(state, {payload: email}: PayloadAction<string>) {
+            state.dismissedEmails[sanitizeKey(email)] = moment().add(state.minutesToDismiss, "minutes").valueOf()
+            state.updateTime = moment().valueOf()
         },
 
-        cancelDismissedPrompt(state, {payload: sanitizedPromptId}: PayloadAction<string>) {
-
-            const sanitizedPrompt = state.sanitizedPrompts[sanitizedPromptId]
-
-            if (sanitizedPrompt) {
-                state.sanitizedPrompts = {
-                    ...state.sanitizedPrompts,
-
-                    [sanitizedPromptId]: {
-                        ...sanitizedPrompt,
-                        expirationTime: -1
-                    }
-                }
-
-                state.updateTime = moment().valueOf()
-            }
-        },
-
-    },
+        cancelDismissedPrompt(state, {payload: email}: PayloadAction<string>) {
+            delete state.dismissedEmails[sanitizeKey(email)]
+            state.updateTime = moment().valueOf()
+        }
+    }
 })
 
 export const {
-    updateMinutesToIgnore,
+    updateMinutesToDismiss,
     addSanitizedPrompt,
-    dismissPrompt,
+    dismissEmail,
     cancelDismissedPrompt
 } = slice.actions;
 

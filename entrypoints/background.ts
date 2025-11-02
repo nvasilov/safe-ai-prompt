@@ -1,12 +1,12 @@
 import {onMessage} from "webext-bridge/background";
-import {SANITIZE_CHATGPT_REQUEST_PAYLOAD} from "@/utils/base.constants.ts";
+import {SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG} from "@/utils/base.constants.ts";
 import {ChatGptBody, ChatGptMessage} from "@/utils/base.zod.ts";
 import {addSanitizedPrompt} from "@/services/prompts.slice.ts";
 import {store} from "@/redux/store.ts";
 
 export default defineBackground(() => {
 
-    onMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD, async ({data: requestPayload}) => {
+    onMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, async ({data: requestPayload}): Promise<SanitizedResult> => {
 
         const payloadObj = JSON.parse(requestPayload)
         const payloadParseResult = chatGptBodySchema.safeParse(payloadObj)
@@ -20,10 +20,10 @@ export default defineBackground(() => {
             const emails: string[] = []
             const sanitizedMessages: ChatGptMessage[] = []
 
-            for (let msg of payload.messages) {
+            for (const msg of payload.messages) {
                 const sanitizedParts: string[] = []
 
-                for (let part of msg.content.parts) {
+                for (const part of msg.content.parts) {
                     const result = sanitizeText(part)
                     sanitizedParts.push(result.value)
                     emails.push(...result.emails)
@@ -38,18 +38,22 @@ export default defineBackground(() => {
                 })
             }
 
-            // TODO temp
             if (emails.length > 0) {
+
+                // persist
                 store.dispatch(addSanitizedPrompt({
-                    replacedEmails: emails, // TODO deduplicate
+                    replacedEmails: emails, // without deduplicate (array position will be used later to revert replace)
                     requestBody: payloadParseResult.data
                 }))
             }
 
-            return JSON.stringify({
-                ...payload,
-                messages: sanitizedMessages
-            })
+            return {
+                emails,
+                value: JSON.stringify({
+                    ...payload,
+                    messages: sanitizedMessages
+                })
+            }
 
         } else {
             console.error(payloadParseResult.error)

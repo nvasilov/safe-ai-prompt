@@ -37,3 +37,17 @@
         flex: 1;
     }
 }
+
+.k-window-titlebar {
+    padding-block: var(--kendo-spacing-2);
+    padding-inline: var(--kendo-spacing-2);
+}
+
+.k-window-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    padding-block: var(--kendo-spacing-2);
+    padding-inline: var(--kendo-spacing-2);
+}
