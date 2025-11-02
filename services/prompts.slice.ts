@@ -17,6 +17,7 @@ const slice = createSlice({
     reducers: {
         updateMinutesToDismiss(state, {payload: minutesToDismiss}: PayloadAction<number>) {
             state.minutesToDismiss = minutesToDismiss
+            state.updateTime = moment().valueOf()
         },
 
         addSanitizedPrompt(state, {payload: sanitizedPrompt}: PayloadAction<SanitizedPrompt>) {
@@ -35,8 +36,13 @@ const slice = createSlice({
             state.updateTime = moment().valueOf()
         },
 
-        cancelDismissedPrompt(state, {payload: email}: PayloadAction<string>) {
-            state.dismissedEmails = state.dismissedEmails.filter(d => d.email === email)
+        cancelDismissedEmail(state, {payload: email}: PayloadAction<string>) {
+            state.dismissedEmails = state.dismissedEmails.filter(d => d.email !== email)
+            state.updateTime = moment().valueOf()
+        },
+
+        cancelDismissedEmails(state, {payload: emails}: PayloadAction<string[]>) {
+            state.dismissedEmails = state.dismissedEmails.filter(d => !emails.includes(d.email))
             state.updateTime = moment().valueOf()
         }
     }
@@ -46,7 +52,8 @@ export const {
     updateMinutesToDismiss,
     addSanitizedPrompt,
     dismissEmail,
-    cancelDismissedPrompt
+    cancelDismissedEmail,
+    cancelDismissedEmails
 } = slice.actions;
 
 export default persistReducer({key: 'base', storage: wxtPersistStorage}, slice.reducer)

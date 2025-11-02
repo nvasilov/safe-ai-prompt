@@ -3,8 +3,27 @@ import {NavigationKey} from "@/utils/base.types.ts";
 import IssuesFoundContainer from "@/components/prompt/containers/IssuesFoundContainer.tsx";
 import HistoryContainer from "@/components/prompt/containers/HistoryContainer.tsx";
 import SettingsContainer from "@/components/prompt/containers/SettingsContainer.tsx";
+import GeneralDetails from "@/components/prompt/containers/GeneralDetails.tsx";
+import moment from "moment/moment";
+import {cancelDismissedEmails} from "@/services/prompts.slice.ts";
+import {useAppDispatch, useAppSelector} from "@/redux/store.ts";
 
 export default function SafePromptCard() {
+
+    const dispatch = useAppDispatch()
+    const {dismissedEmails} = useAppSelector((state) => state.prompts);
+
+    // remove deprecated items
+    useEffect(() => {
+        const currentTime = moment().valueOf()
+        const deprecatedDismissedEmails = dismissedEmails
+            .filter(d => d.expirationTime <= currentTime)
+            .map(d => d.email)
+
+        if (deprecatedDismissedEmails.length > 0) {
+            dispatch(cancelDismissedEmails(deprecatedDismissedEmails))
+        }
+    }, [dismissedEmails, dispatch])
 
     const onRenderNavigationCallback = useCallback((id: NavigationKey) => {
         switch (id) {
@@ -24,7 +43,12 @@ export default function SafePromptCard() {
         }
     }, [])
 
+
     return (
-        <NavigationBar className={"k-flex"} render={onRenderNavigationCallback}/>
+        <NavigationBar
+            className={"k-flex"}
+            renderBody={onRenderNavigationCallback}
+            renderFooter={GeneralDetails}
+        />
     )
 }

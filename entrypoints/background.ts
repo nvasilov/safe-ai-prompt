@@ -1,11 +1,13 @@
 import {onMessage} from "webext-bridge/background";
 import {SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG} from "@/utils/base.constants.ts";
 import {ChatGptBody, ChatGptMessage} from "@/utils/base.zod.ts";
-import {SanitizedMessageResult} from "@/utils/base.types.ts";
+import {RequestPayloadToSanitize, SanitizedMessageResult} from "@/utils/base.types.ts";
 
 export default defineBackground(() => {
 
-    onMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, async ({data: requestPayload}): Promise<SanitizedMessageResult> => {
+    onMessage<RequestPayloadToSanitize>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, async (
+        {data: {requestPayload, dismissedEmails}}
+    ): Promise<SanitizedMessageResult> => {
 
         const payloadObj = JSON.parse(requestPayload)
         const payloadParseResult = chatGptBodySchema.safeParse(payloadObj)
@@ -23,7 +25,8 @@ export default defineBackground(() => {
                 const sanitizedParts: string[] = []
 
                 for (const part of msg.content.parts) {
-                    const {sanitizedText, replacedEmails} = sanitizeText(part)
+                    const {sanitizedText, replacedEmails} = sanitizeText(part, dismissedEmails)
+
                     sanitizedParts.push(sanitizedText)
                     allReplacedEmails.push(...replacedEmails)
                 }

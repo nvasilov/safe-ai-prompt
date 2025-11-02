@@ -10,3 +10,6 @@ export const CHATGPT_URL_REGEX = /^https:\/\/chatgpt\.com\/backend(-anon)?\/f\/c
 export const WORLD_TO_ISOLATED_NS = "world_to_isolated_ns"
 
 export const SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG = "sanitize_chatgpt_request_payload_msg"
+
+export const MOMENT_FULL_FORMAT = "HH:mm:ss / DD MMM YYYY"
+export const MOMENT_TIME_FORMAT = "HH:mm:ss"

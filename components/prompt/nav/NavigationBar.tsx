@@ -1,4 +1,4 @@
-import {AppBar, AppBarSection, AppBarSpacer, Card, CardBody, CardHeader} from "@progress/kendo-react-all";
+import {AppBar, AppBarSection, AppBarSpacer, Card, CardBody, CardFooter, CardHeader} from "@progress/kendo-react-all";
 import wxtLogo from "@/assets/wxt.svg";
 import reactLogo from "@/assets/react.svg";
 import {dataIcon, gearIcon, sparklesIcon} from "@progress/kendo-svg-icons";
@@ -9,10 +9,11 @@ import {Push} from "@progress/kendo-react-animation";
 
 interface Props {
     className?: string
-    render: (id: NavigationKey) => ReactNode
+    renderBody: (id: NavigationKey) => ReactNode
+    renderFooter: (id: NavigationKey) => ReactNode
 }
 
-export default function NavigationBar({className, render}: Props) {
+export default function NavigationBar({className, renderBody, renderFooter}: Props) {
 
     const [active, setActive] = useState<NavigationKey>("issues")
 
@@ -56,10 +57,14 @@ export default function NavigationBar({className, render}: Props) {
                 <Push stackChildren enter exit direction={"left"}
                       transitionEnterDuration={300} transitionExitDuration={200}>
                     <div key={active} className="k-vbox k-flex">
-                        {render(active)}
+                        {renderBody(active)}
                     </div>
                 </Push>
             </CardBody>
+
+            <CardFooter className={"!k-p-2 k-hbox k-gap-sm"}>
+                {renderFooter(active)}
+            </CardFooter>
         </Card>
     )
 }

@@ -9,6 +9,11 @@ export type SanitizedMessageResult = SanitizedText & {
     requestBody: ChatGptBody
 }
 
+export type RequestPayloadToSanitize = {
+    requestPayload: string
+    dismissedEmails: string[]
+}
+
 export type NavigationKey = "issues" | "history" | "settings"
 
 export type SanitizedPrompt = Omit<SanitizedMessageResult, 'sanitizedText'>

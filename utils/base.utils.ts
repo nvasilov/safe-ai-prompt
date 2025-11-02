@@ -1,11 +1,17 @@
 import {SanitizedText} from "@/utils/base.types.ts";
 import {EMAIL_PLACEHOLDER, EMAIL_REGEX} from "@/utils/base.constants.ts";
 
-export const sanitizeText = (text: string): SanitizedText => {
-    const replacedEmails: string[] = text.match(EMAIL_REGEX) || [] // look for emails in the text
+export const sanitizeText = (text: string, ignoreValues: string[]): SanitizedText => {
+    const replacedEmails: string[] = []
 
-    // replace emails with placeholder only if at least one email is present in the text
-    const sanitizedText = replacedEmails && replacedEmails.length > 0 ? text.replace(EMAIL_REGEX, EMAIL_PLACEHOLDER) : text
+    const sanitizedText = text.replace(EMAIL_REGEX, (match) => {
+        if (ignoreValues.includes(match)) {
+            return match
+        }
+
+        replacedEmails.push(match)
+        return EMAIL_PLACEHOLDER
+    })
 
     return {replacedEmails, sanitizedText}
 }

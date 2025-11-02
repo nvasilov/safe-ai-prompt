@@ -6,7 +6,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import {store} from "@/redux/store.ts";
 import {addSanitizedPrompt} from "@/services/prompts.slice.ts";
-import {SanitizedMessageResult} from "@/utils/base.types.ts";
+import {RequestPayloadToSanitize, SanitizedMessageResult} from "@/utils/base.types.ts";
 
 export default defineContentScript({
     matches: [CHATGPT_URL_MATCH],
@@ -20,7 +20,7 @@ export default defineContentScript({
         const ui = await createShadowRootUi(ctx, {
             name: 'test-element-new',
             position: 'inline',
-            onMount: (uiContainer, shadow, shadowHost) => {
+            onMount: (uiContainer) => {
 
                 const app = document.createElement("div");
                 uiContainer.appendChild(app);
@@ -29,8 +29,12 @@ export default defineContentScript({
 
                 root.render((
                     <UIWrapper>
-                        <Window appendTo={null} title={"conditional popup"} resizable draggable minWidth={600} minHeight={200}
-                                initialWidth={600} initialHeight={400} onClose={() => root.unmount()}>
+                        <Window appendTo={null} title={"conditional popup"} resizable draggable
+                                minWidth={600} minHeight={200}
+                                initialWidth={600} initialHeight={400} onClose={() => {
+                            root.unmount()
+                            isMounted = false
+                        }}>
                             <SafePromptCard/>
                         </Window>
                     </UIWrapper>
@@ -40,14 +44,15 @@ export default defineContentScript({
             },
             onRemove: (root) => {
                 root?.unmount()
+                isMounted = false
             }
         })
 
+        onMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, async ({data: requestPayload}): Promise<SanitizedMessageResult> => {
 
-        ui.mount()
-        isMounted = true
-
-        onMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, async ({data}): Promise<SanitizedMessageResult> => {
+            const dismissedEmails = store.getState().prompts.dismissedEmails
+                .map(d => d.email)
+            const data: RequestPayloadToSanitize = {requestPayload, dismissedEmails}
 
             // propagate to background
             const result = await sendMessage<SanitizedMessageResult>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, data, 'background')
@@ -59,9 +64,10 @@ export default defineContentScript({
                     requestBody
                 }))
 
-
-                // ui.mounted?.unmount()
-                // ui.mount()
+                if (!isMounted) {
+                    isMounted = true
+                    ui.mount()
+                }
             }
 
             return result
