@@ -14,7 +14,7 @@ export default function ShadowWindow({onClose}: Props) {
         <UIWrapper>
             <Window
                 appendTo={null} /* required `null` - to inject code in current shadow element instead of main ROOT */
-                modal={false /* TODO probably will be better to set `true` */}
+                modal={true}
                 title={(
                     <div className={"k-hbox k-gap-sm k-align-items-center"}>
                         <Logo/>

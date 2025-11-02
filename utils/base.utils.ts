@@ -69,3 +69,5 @@ export const sanitizeRequestPayload = ({requestPayload, dismissedEmails}: Reques
         requestBody: payloadParseResult.data // to be persisted (only necessary data for popup)
     }
 }
+
+export const DISTINCT_VALUES = <T extends string | number | null>(item: T, idx: number, arr: T[]) => arr.indexOf(item) === idx
