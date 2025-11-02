@@ -1,19 +1,20 @@
 import {AppBar, AppBarSection, AppBarSpacer, Card, CardBody, CardFooter, CardHeader} from "@progress/kendo-react-all";
-import wxtLogo from "@/assets/wxt.svg";
-import reactLogo from "@/assets/react.svg";
 import {dataIcon, gearIcon, sparklesIcon} from "@progress/kendo-svg-icons";
 import NavigationBarButton from "@/components/prompt/nav/NavigationBarButton.tsx";
 import {NavigationKey} from "@/utils/base.types.ts";
 import {ReactNode} from "react";
 import {Push} from "@progress/kendo-react-animation";
+import Logo from "@/components/shared/Logo.tsx";
+import Avatar from "@/components/shared/Avatar.tsx";
 
 interface Props {
+    forSystemPopup: boolean
     className?: string
     renderBody: (id: NavigationKey) => ReactNode
     renderFooter: (id: NavigationKey) => ReactNode
 }
 
-export default function NavigationBar({className, renderBody, renderFooter}: Props) {
+export default function NavigationBar({forSystemPopup, className, renderBody, renderFooter}: Props) {
 
     const [active, setActive] = useState<NavigationKey>("issues")
 
@@ -21,14 +22,13 @@ export default function NavigationBar({className, renderBody, renderFooter}: Pro
         <Card className={className}>
             <CardHeader className={"!k-p-0"}>
                 <AppBar className={"!k-p-2 !k-pl-4 !k-pr-4"}>
-                    <AppBarSection className={"k-gap-sm"}>
-                        <img src={wxtLogo} style={{height: 20}} alt={"wxtLogo"}/>
-                        <div className={"k-mr-2 k-font-bold"}>
-                            Safe AI Prompt
-                        </div>
-                    </AppBarSection>
 
-                    <span className="k-appbar-separator"/>
+                    {forSystemPopup && (
+                        <AppBarSection className={"k-gap-sm"}>
+                            <Logo/>
+                            <span className="k-appbar-separator"/>
+                        </AppBarSection>
+                    )}
 
                     <AppBarSection className="k-gap-sm">
                         <NavigationBarButton id={"issues"} label={"Issues Found"} icon={sparklesIcon}
@@ -45,11 +45,15 @@ export default function NavigationBar({className, renderBody, renderFooter}: Pro
                                              active={active === "settings"} onClick={setActive}/>
                     </AppBarSection>
 
-                    <span className="k-appbar-separator"/>
+                    {forSystemPopup && (
+                        <>
+                            <span className="k-appbar-separator"/>
 
-                    <AppBarSection>
-                        <img src={reactLogo} style={{height: 30}} alt={"reactLogo"}/>
-                    </AppBarSection>
+                            <AppBarSection>
+                                <Avatar/>
+                            </AppBarSection>
+                        </>
+                    )}
                 </AppBar>
             </CardHeader>
 

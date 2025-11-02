@@ -8,14 +8,18 @@ export default function GeneralDetails() {
 
     return (
         <div className={"k-flex k-hbox k-gap-md k-font-size-xs k-align-items-center"}>
-            <div className={"k-hbox k-gap-sm k-align-items-center"}>
-                <span>Last action: </span>
-                <Chip size={"small"} themeColor={"info"}>
-                    <RelativeTime className={"k-font-bold"} time={updateTime}/>
-                </Chip>
-            </div>
+            {updateTime !== 0 && (
+                <>
+                    <div className={"k-hbox k-gap-sm k-align-items-center"}>
+                        <span>Last action: </span>
+                        <Chip size={"small"} themeColor={"info"}>
+                            <RelativeTime className={"k-font-bold"} time={updateTime}/>
+                        </Chip>
+                    </div>
 
-            <span className={"k-toolbar-separator"}/>
+                    <span className={"k-toolbar-separator"}/>
+                </>
+            )}
 
             <div className={"k-hbox k-gap-sm k-align-items-center"}>
                 <span>Dismissed emails: </span>

@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/client";
 import {store} from "@/redux/store.ts";
 import {addSanitizedPrompt} from "@/services/prompts.slice.ts";
 import {RequestPayloadToSanitize, SanitizedMessageResult} from "@/utils/base.types.ts";
+import Logo from "@/components/shared/Logo.tsx";
 
 export default defineContentScript({
     matches: [CHATGPT_URL_MATCH],
@@ -29,13 +30,19 @@ export default defineContentScript({
 
                 root.render((
                     <UIWrapper>
-                        <Window appendTo={null} title={"conditional popup"} resizable draggable
-                                minWidth={600} minHeight={200}
-                                initialWidth={600} initialHeight={400} onClose={() => {
+                        <Window
+                            appendTo={null}
+                            title={(
+                                <div className={"k-hbox k-gap-sm k-align-items-center"}>
+                                    <Logo/>
+                                </div>
+                            )}
+                            resizable draggable minWidth={600} minHeight={200}
+                            initialWidth={600} initialHeight={400} onClose={() => {
                             root.unmount()
                             isMounted = false
                         }}>
-                            <SafePromptCard/>
+                            <SafePromptCard forSystemPopup={false}/>
                         </Window>
                     </UIWrapper>
                 ))
@@ -65,8 +72,8 @@ export default defineContentScript({
                 }))
 
                 if (!isMounted) {
-                    isMounted = true
                     ui.mount()
+                    isMounted = true
                 }
             }
 

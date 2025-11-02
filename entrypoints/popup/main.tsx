@@ -6,6 +6,8 @@ import UIWrapper from "@/components/UIWrapper.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <UIWrapper>
-        <SafePromptCard/>
+        <div className={"k-vbox"} style={{width: 600, height: 400}}>
+            <SafePromptCard forSystemPopup/>
+        </div>
     </UIWrapper>
 )

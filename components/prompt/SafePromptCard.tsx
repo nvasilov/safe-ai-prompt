@@ -8,7 +8,11 @@ import moment from "moment/moment";
 import {cancelDismissedEmails} from "@/services/prompts.slice.ts";
 import {useAppDispatch, useAppSelector} from "@/redux/store.ts";
 
-export default function SafePromptCard() {
+interface Props {
+    forSystemPopup: boolean
+}
+
+export default function SafePromptCard({forSystemPopup} : Props) {
 
     const dispatch = useAppDispatch()
     const {dismissedEmails} = useAppSelector((state) => state.prompts);
@@ -46,7 +50,7 @@ export default function SafePromptCard() {
 
     return (
         <NavigationBar
-            className={"k-flex"}
+            className={"k-flex"} forSystemPopup={forSystemPopup}
             renderBody={onRenderNavigationCallback}
             renderFooter={GeneralDetails}
         />
