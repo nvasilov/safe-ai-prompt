@@ -4,6 +4,9 @@ import SafePromptCard from "@/components/prompt/SafePromptCard.tsx";
 import UIWrapper from "@/components/UIWrapper.tsx";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import {store} from "@/redux/store.ts";
+import {addSanitizedPrompt} from "@/services/prompts.slice.ts";
+import {SanitizedMessageResult} from "@/utils/base.types.ts";
 
 export default defineContentScript({
     matches: [CHATGPT_URL_MATCH],
@@ -13,6 +16,7 @@ export default defineContentScript({
         // TODO work only in chrome
         allowWindowMessaging(WORLD_TO_ISOLATED_NS)
 
+        let isMounted = false
         const ui = await createShadowRootUi(ctx, {
             name: 'test-element-new',
             position: 'inline',
@@ -40,13 +44,24 @@ export default defineContentScript({
         })
 
 
-        onMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, async ({data}): Promise<SanitizedResult> => {
+        ui.mount()
+        isMounted = true
+
+        onMessage<string>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, async ({data}): Promise<SanitizedMessageResult> => {
 
             // propagate to background
-            const result = await sendMessage<SanitizedResult>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, data, 'background')
+            const result = await sendMessage<SanitizedMessageResult>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, data, 'background')
+            const {replacedEmails, requestBody} = result
 
-            if (result.emails.length > 0) {
-                ui.mount()
+            if (replacedEmails.length > 0) {
+                store.dispatch(addSanitizedPrompt({
+                    replacedEmails, // without deduplicate (array position will be used later to revert replace)
+                    requestBody
+                }))
+
+
+                // ui.mounted?.unmount()
+                // ui.mount()
             }
 
             return result

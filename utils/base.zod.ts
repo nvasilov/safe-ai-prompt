@@ -8,13 +8,13 @@ export type ChatGptMessageContent = z.infer<typeof chatGptMessageContentSchema>;
 
 export const chatGptMessageSchema = z.object({
     id: z.string(),
-    content: chatGptMessageContentSchema
+    content: chatGptMessageContentSchema,
+    create_time: z.number() /* format: 1762083078.079 */
 })
 
 export type ChatGptMessage = z.infer<typeof chatGptMessageSchema>;
 
 export const chatGptBodySchema = z.object({
-    model: z.string(),
     messages: z.array(chatGptMessageSchema)
 })
 

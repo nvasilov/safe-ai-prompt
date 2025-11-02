@@ -1,13 +1,13 @@
-import {SanitizedResult} from "@/utils/base.types.ts";
+import {SanitizedText} from "@/utils/base.types.ts";
 import {EMAIL_PLACEHOLDER, EMAIL_REGEX} from "@/utils/base.constants.ts";
 
-export const sanitizeText = (text: string): SanitizedResult => {
-    const emails: string[] = text.match(EMAIL_REGEX) || [] // look for emails in the text
+export const sanitizeText = (text: string): SanitizedText => {
+    const replacedEmails: string[] = text.match(EMAIL_REGEX) || [] // look for emails in the text
 
     // replace emails with placeholder only if at least one email is present in the text
-    const value = emails && emails.length > 0 ? text.replace(EMAIL_REGEX, EMAIL_PLACEHOLDER) : text
+    const sanitizedText = replacedEmails && replacedEmails.length > 0 ? text.replace(EMAIL_REGEX, EMAIL_PLACEHOLDER) : text
 
-    return {emails, value}
+    return {replacedEmails, sanitizedText}
 }
 
 export const DISTINCT_VALUES = <T extends string | number | null>(item: T, idx: number, arr: T[]) => arr.indexOf(item) === idx

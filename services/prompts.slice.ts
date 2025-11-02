@@ -3,12 +3,11 @@ import {persistReducer} from "redux-persist";
 import {wxtPersistStorage} from "@/redux/customStorage.ts";
 import {BaseSliceState} from "@/utils/base.types.ts";
 import moment from "moment";
-import {sanitizeKey} from "@/utils/base.utils.ts";
 
 const initialState: BaseSliceState = {
     updateTime: 0,
     minutesToDismiss: 24 * 60, // 24h
-    dismissedEmails: {}, // [email] : expirationTime
+    dismissedEmails: [],
     sanitizedPrompts: []
 }
 
@@ -26,12 +25,18 @@ const slice = createSlice({
         },
 
         dismissEmail(state, {payload: email}: PayloadAction<string>) {
-            state.dismissedEmails[sanitizeKey(email)] = moment().add(state.minutesToDismiss, "minutes").valueOf()
+
+            // do not need to clean array, because dismiss button is not present for already dismissed emails
+            state.dismissedEmails.push({
+                email,
+                expirationTime: moment().add(state.minutesToDismiss, "minutes").valueOf()
+            })
+
             state.updateTime = moment().valueOf()
         },
 
         cancelDismissedPrompt(state, {payload: email}: PayloadAction<string>) {
-            delete state.dismissedEmails[sanitizeKey(email)]
+            state.dismissedEmails = state.dismissedEmails.filter(d => d.email === email)
             state.updateTime = moment().valueOf()
         }
     }

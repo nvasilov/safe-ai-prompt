@@ -5,6 +5,7 @@ import {
     WORLD_TO_ISOLATED_NS
 } from "@/utils/base.constants.ts";
 import {sendMessage, setNamespace} from "webext-bridge/window";
+import {SanitizedMessageResult} from "@/utils/base.types.ts";
 
 export default defineContentScript({
     matches: [CHATGPT_URL_MATCH],
@@ -27,11 +28,11 @@ export default defineContentScript({
                     if (init && init.body) {
                         const bodyStr = init.body.toString()
 
-                        const {value: sanitizedBodyStr} = await sendMessage<SanitizedResult>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, bodyStr, 'content-script')
+                        const {sanitizedText} = await sendMessage<SanitizedMessageResult>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, bodyStr, 'content-script')
 
                         return originalFetch(new Request(input, {
                             ...init,
-                            body: sanitizedBodyStr
+                            body: sanitizedText
                         }))
 
                     } else {
