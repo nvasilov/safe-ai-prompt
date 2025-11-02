@@ -16,7 +16,9 @@ export default function ConfirmationDialog(
 ) {
 
     return (
-        <Dialog closeIcon={false} minWidth={400} appendTo={null}>
+        <Dialog closeIcon={false} minWidth={400}
+                appendTo={null} /* required `null` - to inject code in current shadow element instead of main ROOT */
+        >
             <div className={"k-hbox k-gap-sm k-align-items-center"}>
                 <SvgIcon icon={questionSolidIcon} size={"large"}/>
                 <span className={"k-font-size-md"}>
@@ -42,7 +44,8 @@ export default function ConfirmationDialog(
 
                 <Button svgIcon={checkIcon} size={"small"} fillMode={"flat"} themeColor={"primary"}
                         onClick={(e) => {
-                            e.stopPropagation() // TODO temp to solve some issues with kendo expansion panel (expand/collapse is triggered)
+                            // TODO temp to solve some issues with kendo expansion panel (expand/collapse is triggered)
+                            e.stopPropagation()
                             yesCallback()
                         }}>
                     Yes

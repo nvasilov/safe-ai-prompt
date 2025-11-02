@@ -19,7 +19,7 @@ export default function DismissButton({data: {email, dismissTime}}: Props) {
     const [confirm, setConfirm] = useState(false);
 
     const dismissDelay = useMemo(() => {
-        return dismissTime - moment().valueOf()
+        return dismissTime !== -1 ? dismissTime - moment().valueOf() : 0
     }, [dismissTime])
 
     const onDismissCallback = useCallback((event: ChipMouseEvent) => {
@@ -41,14 +41,16 @@ export default function DismissButton({data: {email, dismissTime}}: Props) {
         setConfirm(false)
     }, [])
 
-
+    // cancel now or wait dismiss time to cancel dismissed email
     useEffect(() => {
         if (dismissDelay <= 0) {
             dispatch(cancelDismissedEmail(email))
             return
         }
 
-        const timer = setTimeout(() => dispatch(cancelDismissedEmail(email)), dismissDelay)
+        const timer = setTimeout(() => {
+            dispatch(cancelDismissedEmail(email))
+        }, dismissDelay)
 
         return () => clearTimeout(timer)
     }, [dismissDelay, dispatch, email])

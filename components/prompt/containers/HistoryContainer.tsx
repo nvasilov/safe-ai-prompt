@@ -6,7 +6,7 @@ import EmailExpansionPanel, {
 export default function HistoryContainer() {
 
     const [expanded, setExpanded] = useState<string>()
-    const {lastMsgTime, refinedData} = usePromptsData()
+    const {refinedData} = usePromptsData()
 
     const onActionCallback = useCallback((event: EmailExpansionPanelActionEvent) => {
         setExpanded(event.expanded ? '' : event.data.email)

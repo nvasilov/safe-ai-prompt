@@ -2,6 +2,7 @@ import type {Storage as PersistStorage} from 'redux-persist';
 import {storage} from '#imports'
 import {STORAGE_PREFIX} from "@/utils/base.constants.ts";
 
+// wrapper for redux to work with WXT storage
 export const wxtPersistStorage: PersistStorage = {
     getItem(key) {
         return storage.getItem<string>(`${STORAGE_PREFIX}:${key}`)

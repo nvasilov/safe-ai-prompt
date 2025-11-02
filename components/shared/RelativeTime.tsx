@@ -15,6 +15,8 @@ export default function RelativeTime({time, className, style, showSeconds, title
 
     const [, setTick] = useState(0)
 
+    // memo can not be used here because time is not update,
+    // but each second state is changed so we need to rerender UI (to show real diff time in seconds)
     const diff = moment(time).diff(moment().valueOf())
     const useFromNow = moment().valueOf() > time
 
@@ -22,6 +24,7 @@ export default function RelativeTime({time, className, style, showSeconds, title
         return moment(time).format(MOMENT_FULL_FORMAT)
     }, [time])
 
+    // trigger rerender each second ONLY if browser tab is active
     useEffect(() => {
         let timer: number | undefined
 

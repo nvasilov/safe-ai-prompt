@@ -1,25 +1,25 @@
 import {allowWindowMessaging, onMessage, sendMessage} from 'webext-bridge/content-script'
-import {Window} from "@progress/kendo-react-all";
-import SafePromptCard from "@/components/prompt/SafePromptCard.tsx";
-import UIWrapper from "@/components/UIWrapper.tsx";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import {store} from "@/redux/store.ts";
 import {addSanitizedPrompt} from "@/services/prompts.slice.ts";
 import {RequestPayloadToSanitize, SanitizedMessageResult} from "@/utils/base.types.ts";
-import Logo from "@/components/shared/Logo.tsx";
+import ShadowWindow from "@/components/ShadowWindow.tsx";
 
 export default defineContentScript({
     matches: [CHATGPT_URL_MATCH],
     cssInjectionMode: 'ui',
     main: async (ctx) => {
 
-        // TODO work only in chrome
+        // TODO work only in chrome (need to clarify with firefox, probably will work with native window.postMessage)
         allowWindowMessaging(WORLD_TO_ISOLATED_NS)
 
+        // flag to avoid multiple `mount` call,
+        // for case when window is not modal, and user can continue work in the chat (after collapse window and drag&drop)
         let isMounted = false
+
         const ui = await createShadowRootUi(ctx, {
-            name: 'test-element-new',
+            name: 'safe-ai-prompt-element',
             position: 'inline',
             onMount: (uiContainer) => {
 
@@ -29,22 +29,11 @@ export default defineContentScript({
                 const root = ReactDOM.createRoot(app)
 
                 root.render((
-                    <UIWrapper>
-                        <Window
-                            appendTo={null}
-                            title={(
-                                <div className={"k-hbox k-gap-sm k-align-items-center"}>
-                                    <Logo/>
-                                </div>
-                            )}
-                            resizable draggable minWidth={600} minHeight={200}
-                            initialWidth={600} initialHeight={400} onClose={() => {
+                    <ShadowWindow
+                        onClose={() => {
                             root.unmount()
                             isMounted = false
-                        }}>
-                            <SafePromptCard forSystemPopup={false}/>
-                        </Window>
-                    </UIWrapper>
+                        }}/>
                 ))
 
                 return root
@@ -61,16 +50,18 @@ export default defineContentScript({
                 .map(d => d.email)
             const data: RequestPayloadToSanitize = {requestPayload, dismissedEmails}
 
-            // propagate to background
+            // propagate request payload to background (with actual dismissed emails)
             const result = await sendMessage<SanitizedMessageResult>(SANITIZE_CHATGPT_REQUEST_PAYLOAD_MSG, data, 'background')
             const {replacedEmails, requestBody} = result
 
+            // if we have replaced emails then we display the popup with recent issues (default active tab)
             if (replacedEmails.length > 0) {
                 store.dispatch(addSanitizedPrompt({
                     replacedEmails, // without deduplicate (array position will be used later to revert replace)
                     requestBody
                 }))
 
+                // mount only if it not already mounted
                 if (!isMounted) {
                     ui.mount()
                     isMounted = true

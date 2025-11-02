@@ -11,6 +11,7 @@ interface Props {
 
 export default function ChatGptCard({message: {create_time, content: {parts}}, email}: Props) {
 
+    // highlight current email in the message text
     const refinedTextHtml = useMemo(() => {
         return parts.join()
             .replaceAll(email, `<span style="color: darkred" class="k-font-size-sm k-font-bold">${email}</span>`)

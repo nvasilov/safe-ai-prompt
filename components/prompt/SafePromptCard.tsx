@@ -17,7 +17,7 @@ export default function SafePromptCard({forSystemPopup} : Props) {
     const dispatch = useAppDispatch()
     const {dismissedEmails} = useAppSelector((state) => state.prompts);
 
-    // remove deprecated items
+    // need to check and clean dismissed emails (in case when user navigate to another web app or browser was closed)
     useEffect(() => {
         const currentTime = moment().valueOf()
         const deprecatedDismissedEmails = dismissedEmails

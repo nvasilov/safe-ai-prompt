@@ -14,7 +14,7 @@ export default defineContentScript({
     main: () => {
         const originalFetch = window.fetch.bind(window);
 
-        // TODO work only in chrome
+        // TODO work only in chrome (need to clarify with firefox, probably will work with native window.postMessage)
         setNamespace(WORLD_TO_ISOLATED_NS)
 
         window.fetch = async function (input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
