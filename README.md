@@ -78,4 +78,4 @@ as a quick solution we can try to use native `window.postMessage`.
 ![history](/assets/Screenshot_4.png)
 
 ### Opera
-![settings](/assets/Screenshot_2.png)
+![settings](/assets/Screenshot_5.png)
