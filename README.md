@@ -6,8 +6,10 @@
 Generated React project using [WXT framework](https://wxt.dev/) (`npx wxt@latest init`)
 
 1. Download the project from [GitHub](https://github.com/nvasilov/safe-ai-prompt)
-2. for developer environment run in cmd `npm run dev` (Google Chrome browser will be opened automatically)
-3. for production (unpacked) environment run in cmd `npm run build`
+2. maker sure to have installed [Node.js](https://nodejs.org/)
+3. install dependencies with `npm install`
+4. for developer environment run in cmd `npm run dev` (Google Chrome browser will be opened automatically)
+5. for production (unpacked) environment run in cmd `npm run build`
    * to install unpacked extension in your browser following the next steps:
      * open your browser
      * go to `Manage extensions`
